@@ -46,5 +46,4 @@ Yes, I realize that "#do diagnose" will continue until an imm disconnects you.  
 
 Just, don't do it.
 
-Actually... just don't get caught.  (Why do you think the delay is random?)
-
+(OK... cya time is over.)
