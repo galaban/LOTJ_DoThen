@@ -3,7 +3,7 @@ This is a rather large plugin that implements a #do and #then commands for the L
 
 ### Specifics
 
-Let's say you get tired of typing "search" repeatedly.  This plugin adds allows you to type "#do search" and you will dig until you find something.  It's easy to image that after that you want to "get" whatever is on the ground.  With this plugin, you can enter "#then get camera".
+Let's say you get tired of typing "search" repeatedly.  This plugin adds allows you to type "#do search" and you will search until you find something.  It's easy to image that after that you want to "get" whatever is on the ground.  With this plugin, you can enter "#then get camera".
 
 Imagine that you want to develop 3 times.  Instead of using "#do develop", you can use "#do 3 develop" and it will stop after the third development.  (After that, I suggest "#then afk")
 
