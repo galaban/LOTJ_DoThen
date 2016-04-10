@@ -1070,7 +1070,7 @@ tmpAutoSlice = false
 
 -------------------------------
 --  Plugin Events
---
+-------------------------------
 function OnPluginInstall()
     --make sure these are cleared!
     stopAllAutoRepeat()
@@ -1085,6 +1085,17 @@ function OnPluginEnable()
     --make sure these are cleared!
     stopAllAutoRepeat()
 end
+
+function BroadcastMessage(command)
+    local bot = GetVariable("varLegalBotting")
+
+    if (bot) then
+        BroadcastPlugin(17, command)
+    else
+        BroadcastPlugin(16, command)
+    end
+end
+
 -------------------------------
 -- FILTERS
 -------------------------------
@@ -1235,6 +1246,7 @@ end
 --  Interruption code
 --
 function setInterruption()
+    BroadcastMessage("setinterruption")
     local val = GetVariable("varRepeatCommand")
 
     -- Allow interruptions while botting?
@@ -1254,6 +1266,7 @@ function checkInterrupt()
     if (interruption ~= nil and interruption ~= "") then
         Note("ACTION ABORTED.  You've been Interrupted")
         Note("USE #do to continue")
+        BroadcastMessage("actioninterrupted")
         return true
     end
     return false
@@ -1267,6 +1280,8 @@ function keepDoing(delay, maxdelay, executeDelayedNow)
     local varID = "varRepeatCommand"
     local val = GetVariable(varID)
     local bot = GetVariable("varLegalBotting")
+
+    BroadcastMessage("docomplete")
 
     if (checkInterrupt()) then
         return
@@ -1282,15 +1297,17 @@ function keepDoing(delay, maxdelay, executeDelayedNow)
         SetVariable("tmpVarRepeatCount", repcount)
         if (repcount == 0) then
             Note("Auto-limit reached.  Stopping Repeat Command")
-            stopDoing()
 
+            stopDoing()
             return
         end
         Note("Continue for "..repcount.." more times.")
     end
 
     if (delay == 0 or delay == nil) then
-        Execute(val)
+        if (val ~= nil and val ~= "") then
+            Execute(val)
+        end
         return
     elseif (val ~= nil and val ~= "") then
         DoAfterSpecialRandom2(delay, maxdelay, "Execute('"..val.."')")
@@ -1304,12 +1321,14 @@ function keepDoing(delay, maxdelay, executeDelayedNow)
 end
 
 function stopDoing()
+    BroadcastMessage("stopdoing")
     stopAllAutoRepeat()
     checkDelayedAction()
 end
 
 function doAgain()
 
+    BroadcastMessage("doagain")
     local action = GetVariable("varRepeatCommand")
 
     -- Special case where we want to execute it now without processing
@@ -1321,19 +1340,21 @@ end
 
 
 function stopAllAutoRepeat()
-   SetVariable("varRepeatCommand","")
-   SetVariable("varShipBuildPart","")
-   DeleteVariable("tmpVarRepeatCount")
+    BroadcastMessage("stopall")
+    SetVariable("varRepeatCommand","")
+    SetVariable("varShipBuildPart","")
+    DeleteVariable("tmpVarRepeatCount")
 end
 
 
 function checkDelayedAction(executeNow)
     repeatVar = "varRepeatCommand"
 
-   -- Note: We call this function before any "repeater" functions.  
-   -- However, the delay at the bottom of this, screws all that up.
-   -- So, the "then" applies to after the ->repeater<- function completes.
-
+    -- Note: We call this function before any "repeater" functions.  
+    -- However, the delay at the bottom of this, screws all that up. 
+    -- So, the "then" applies to after the ->repeater<- function completes.
+    -- To solve this, we only delay the "then" function by 0.5 seconds
+    -- All the "do functions are delayed by 1+ second.
     if (executeNow == true) then
         local rep = GetVariable(repeatVar)
         if (rep ~= nil and rep ~= "") then
