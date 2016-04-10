@@ -689,16 +689,6 @@ stopDoing()
 
   <trigger
    enabled="y"
-   group="_Combat"
-   match="You can't go that way, * is blocking that exit."
-   send_to="12"
-   sequence="100"
-   script="setInterruption"
-  >
-  </trigger>
-
-  <trigger
-   enabled="y"
    expand_variables="y"
    group="Alerts"
    match="^(.*) (slithers in|arrives) from (.*)\.$"
@@ -779,10 +769,6 @@ end
 
     local command = "%1"
     if tonumber(firstWord) ~= nil then
-         if (tonumber(firstWord) < 1) then
-            Note("Umm... no. You ahve to use a positive count for #do N command")
-            return
-         end
          command = command:sub(string.len(firstWord)+2)
          SetVariable("tmpVarRepeatCount", tonumber(firstWord))
          Note("Doing &lt;"..command.."&gt; for &lt;"..firstWord.."&gt; times")
@@ -1246,7 +1232,6 @@ end
 --  Interruption code
 --
 function setInterruption()
-    BroadcastMessage("setinterruption")
     local val = GetVariable("varRepeatCommand")
 
     -- Allow interruptions while botting?
@@ -1256,6 +1241,8 @@ function setInterruption()
     --end
 
     if (val ~= nil and val ~= "") then
+        BroadcastMessage("setinterruption")
+
         SetVariable("tmpVarInterrupt","1")
         Note("[---- ACTION INTERRUPTED ---]")
     end
